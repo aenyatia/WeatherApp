@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package com.example.weatherapp
 
 import android.os.Bundle
@@ -32,6 +30,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun App() {
     val pagerState = rememberPagerState { 3 }

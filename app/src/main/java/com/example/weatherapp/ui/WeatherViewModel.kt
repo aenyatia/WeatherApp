@@ -7,15 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.weatherapp.Resource
 import com.example.weatherapp.models.Weather
 import com.example.weatherapp.repositories.IWeatherRepository
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
 
-class WeatherViewModel(
-    private val repository: IWeatherRepository,
-) : ViewModel() {
+class WeatherViewModel(private val repository: IWeatherRepository) : ViewModel() {
 
     private val _state = MutableStateFlow(WeatherState())
     val state = _state.asStateFlow()
@@ -27,6 +23,10 @@ class WeatherViewModel(
         city.value = value
     }
 
+    init {
+        loadWeather()
+    }
+
     fun loadWeather() {
         viewModelScope.launch {
             _state.value = _state.value.copy(
@@ -34,12 +34,10 @@ class WeatherViewModel(
                 error = null
             )
 
-            delay(3000)
-
             when (val result = repository.getWeather(city.value)) {
                 is Resource.Success -> {
                     _state.value = _state.value.copy(
-                        weatherInfo = result.data,
+                        weather = result.data,
                         isLoading = false,
                         error = null
                     )
@@ -47,7 +45,7 @@ class WeatherViewModel(
 
                 is Resource.Error -> {
                     _state.value = _state.value.copy(
-                        weatherInfo = null,
+                        weather = null,
                         isLoading = false,
                         error = result.message
                     )
@@ -57,6 +55,12 @@ class WeatherViewModel(
     }
 }
 
+data class WeatherState(
+    val weather: Weather? = null,
+    val isLoading: Boolean = false,
+    val error: String? = null
+)
+
 fun <VM : ViewModel> viewModelFactory(initializer: () -> VM): ViewModelProvider.Factory {
     return object : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -64,10 +68,3 @@ fun <VM : ViewModel> viewModelFactory(initializer: () -> VM): ViewModelProvider.
         }
     }
 }
-
-@Serializable
-data class WeatherState(
-    val weatherInfo: Weather? = null,
-    val isLoading: Boolean = false,
-    val error: String? = null
-)

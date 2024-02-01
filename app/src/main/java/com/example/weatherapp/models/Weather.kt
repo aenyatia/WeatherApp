@@ -1,13 +1,20 @@
 package com.example.weatherapp.models
 
-import com.squareup.moshi.Json
-import kotlinx.serialization.Serializable
-
-@Serializable
 data class Weather(
-    @field:Json(name = "cod")
-    val code: Int = 0,
+    val cityName: String,
+    val forecasts: List<Forecast>? = null
+)
 
-    @field:Json(name = "message")
-    val message: String = ""
+data class Forecast(
+    val weather: String,
+    val weatherDescription: String,
+    val icon: String,
+    val currentTemp: Double,
+    val feelsTemp: Double,
+    val minTemp: Double,
+    val maxTemp: Double,
+    val windSpeed: Double,
+    val pressure: Int,
+    val humidity: Int,
+    val time: String
 )
