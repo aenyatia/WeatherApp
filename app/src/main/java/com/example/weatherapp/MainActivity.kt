@@ -8,30 +8,25 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.weatherapp.ui.WeatherViewModel
 import com.example.weatherapp.ui.theme.WeatherAppTheme
+import com.example.weatherapp.ui.viewModelFactory
+import com.example.weatherapp.ui.weather.CurrentWeatherPage
+import com.example.weatherapp.ui.weather.DailyWeatherPage
+import com.example.weatherapp.ui.weather.DetailsWeatherPage
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             WeatherAppTheme {
-                Surface(
-                    color = MaterialTheme.colorScheme.background,
-                    modifier = Modifier
-                        .fillMaxSize()
-                ) {
-                    App()
-                }
+                App()
             }
         }
     }
@@ -40,47 +35,20 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun App() {
     val pagerState = rememberPagerState { 3 }
+    val viewModel = viewModel<WeatherViewModel>(factory = viewModelFactory {
+        WeatherViewModel(WeatherApp.appModule.weatherRepository)
+    })
 
     HorizontalPager(
         state = pagerState,
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.DarkGray)
-    ) {
-        when (it) {
-            0 -> CurrentWeatherPage()
-            1 -> DetailsWeatherPage()
-            2 -> DailyWeatherPage()
+            .background(Color.Yellow)
+    ) { page ->
+        when (page) {
+            0 -> CurrentWeatherPage(viewModel)
+            1 -> DetailsWeatherPage(viewModel)
+            2 -> DailyWeatherPage(viewModel)
         }
     }
-}
-
-@Composable
-fun CurrentWeatherPage() {
-    Text(
-        text = "Current Weather Page",
-        textAlign = TextAlign.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-    )
-}
-
-@Composable
-fun DetailsWeatherPage() {
-    Text(
-        text = "Details Weather Page",
-        textAlign = TextAlign.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-    )
-}
-
-@Composable
-fun DailyWeatherPage() {
-    Text(
-        text = "Daily Weather Page",
-        textAlign = TextAlign.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-    )
 }

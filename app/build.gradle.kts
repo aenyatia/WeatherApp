@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    kotlin("plugin.serialization") version "1.9.22"
 }
 
 android {
@@ -66,4 +67,15 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 }
