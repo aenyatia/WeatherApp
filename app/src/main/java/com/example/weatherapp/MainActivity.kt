@@ -121,12 +121,12 @@ fun X(viewModel: WeatherViewModel, pagerState: PagerState) {
         }
     } else {
         if (windowInfo.screenWidthInfo is WindowInfo.WindowType.Expanded) {
-            Column {
-                Row(Modifier.weight(1f)) {
+            Row {
+                Column(Modifier.weight(1f)) {
                     CurrentWeatherPage(viewModel = viewModel)
                 }
 
-                Row(Modifier.weight(1f)) {
+                Column(Modifier.weight(1f)) {
                     DailyWeatherPage(viewModel = viewModel)
                 }
             }
