@@ -42,10 +42,12 @@ class WeatherViewModel(
             _state.value = Json.decodeFromString<WeatherState>(lastWeatherJson)
             lastUpdate.value = LocalDateTime.parse(lastUpdateJson)
             city.value = _state.value.weather?.cityName ?: "Warsaw"
-        }
 
-        val hourFromLastUpdate = ChronoUnit.HOURS.between(lastUpdate.value, LocalDateTime.now())
-        if (hourFromLastUpdate > 3) {
+            val hourFromLastUpdate = ChronoUnit.HOURS.between(lastUpdate.value, LocalDateTime.now())
+            if (hourFromLastUpdate > 3) {
+                loadWeather()
+            }
+        } else {
             loadWeather()
         }
     }
