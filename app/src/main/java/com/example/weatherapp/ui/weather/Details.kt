@@ -62,7 +62,7 @@ fun DetailsWeatherPage(viewModel: WeatherViewModel) {
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Max temp: " + state.weather?.forecasts?.first()?.maxTemp.toString(),
+            text = "Max temp: " + state.weather?.forecasts?.first()?.maxTemp.toString() + "°",
             fontSize = 24.sp,
         )
         Spacer(modifier = Modifier.height(20.dp))

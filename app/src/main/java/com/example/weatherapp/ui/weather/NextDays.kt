@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,7 +36,10 @@ fun DailyWeatherPage(viewModel: WeatherViewModel) {
     val dateFormatter = SimpleDateFormat("EEEE", Locale.ENGLISH)
     val timeFormatter = SimpleDateFormat("HH:mm", Locale.ENGLISH)
 
-    LazyColumn {
+    LazyColumn(
+        modifier = Modifier
+            .background(Color.LightGray)
+    ) {
         val forecasts = state.weather?.forecasts ?: listOf()
 
         items(forecasts) {
@@ -45,7 +49,7 @@ fun DailyWeatherPage(viewModel: WeatherViewModel) {
                 modifier = Modifier
                     .padding(24.dp, 24.dp, 24.dp, 0.dp)
                     .fillMaxWidth()
-                    .background(Color.Gray)
+                    .background(Color(0xFFDDDDDD))
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
