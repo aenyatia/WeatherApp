@@ -1,167 +1,180 @@
 package com.example.weatherapp.ui.weather
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.weatherapp.R
+import com.example.weatherapp.api.getIconId
 import com.example.weatherapp.ui.WeatherViewModel
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun CurrentWeatherPage(viewModel: WeatherViewModel) {
     val state by viewModel.state.collectAsState()
 
+    val dateFormatter = DateTimeFormatter.ofPattern("dd MM yyyy")
+    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Gray)
+            .background(Color.LightGray)
     ) {
 
         // city, time
         Row(
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.Yellow)
+                .height(50.dp)
         ) {
-            Text(
-                text = state.weather?.cityName ?: ""
+            TextField(
+                value = viewModel.city.value,
+                onValueChange = viewModel::updateCity,
+                singleLine = true,
+                modifier = Modifier
+                    .fillMaxWidth(0.3f)
             )
             Text(
-                text = state.weather?.forecasts?.first()?.time ?: ""
+                text = "Last update: " + viewModel.lastUpdate.value.format(timeFormatter),
+            )
+            Image(
+                painter = painterResource(id = R.drawable.reload),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(40.dp, 40.dp)
+                    .fillMaxSize()
+                    .padding(5.dp)
+                    .clickable(
+                        onClick = {
+                            viewModel.loadWeather()
+                        }
+                    )
             )
         }
 
         // temperature
-        Row(
-            horizontalArrangement = Arrangement.Center,
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.Green)
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
+            Text(
+                text = state.weather?.cityName ?: "",
+                fontSize = 50.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Text(
+                text = " " + state.weather?.forecasts?.first()?.currentTemp?.toInt()
+                    .toString() + "°",
+                fontSize = 120.sp,
+                fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Image(
+                painter = painterResource(id = getIconId(state.weather?.forecasts?.first()?.icon)),
+                contentDescription = "",
+                modifier = Modifier.size(200.dp, 200.dp)
+            )
+
+            Text(
+                text = state.weather?.forecasts?.first()?.weather ?: "",
+                fontSize = 42.sp,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.LightGray)
-            ) {
-                Text(
-                    text = state.weather?.forecasts?.first()?.currentTemp.toString(),
-                    fontSize = 120.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .background(Color.Blue)
-                )
+            )
 
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Text(
-                    text = state.weather?.forecasts?.first()?.weather ?: "",
-                    fontSize = 24.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .background(Color.Red)
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Text(
-                    text = state.weather?.forecasts?.first()?.weatherDescription ?: "",
-                    fontSize = 16.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .background(Color.Red)
-                )
-            }
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = state.weather?.forecasts?.first()?.weatherDescription ?: "",
+                fontSize = 24.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+            )
         }
 
         Spacer(modifier = Modifier.height(30.dp))
 
-        // next hours
+        // pressure, humidity, wind
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.Cyan)
+                .background(Color.Gray)
+                .height(50.dp)
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxHeight()
             ) {
-                Text(
-                    text = "20",
-                    textAlign = TextAlign.Center,
+                Image(
+                    painter = painterResource(id = R.drawable.pressure),
+                    contentDescription = null,
                     modifier = Modifier
-                        .background(Color.Magenta)
+                        .size(30.dp, 30.dp)
                 )
-                Text(text = "12:00")
+                Text(
+                    text = " " + state.weather?.forecasts?.first()?.pressure.toString() + " hPa"
+                )
             }
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxHeight()
             ) {
-                Text(
-                    text = "21",
-                    textAlign = TextAlign.Center,
+                Image(
+                    painter = painterResource(id = R.drawable.humidity),
+                    contentDescription = null,
                     modifier = Modifier
-                        .background(Color.Magenta)
+                        .size(30.dp, 30.dp)
                 )
-                Text(text = "13:00")
+                Text(
+                    text = " " + state.weather?.forecasts?.first()?.humidity.toString() + " %"
+                )
             }
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxHeight()
             ) {
-                Text(
-                    text = "22",
-                    textAlign = TextAlign.Center,
+                Image(
+                    painter = painterResource(id = R.drawable.windy),
+                    contentDescription = null,
                     modifier = Modifier
-                        .background(Color.Magenta)
+                        .size(30.dp, 30.dp)
                 )
-                Text(text = "14:00")
-            }
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
                 Text(
-                    text = "20",
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .background(Color.Magenta)
+                    text = " " + state.weather?.forecasts?.first()?.windSpeed.toString() + " km/h"
                 )
-                Text(text = "15:00")
             }
-        }
-
-        Spacer(modifier = Modifier.height(30.dp))
-
-        // pressure, ..., wind
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.Yellow)
-        ) {
-            Text(
-                text = "Pressure: " + state.weather?.forecasts?.first()?.pressure
-            )
-            Text(
-                text = "Humidity: " + state.weather?.forecasts?.first()?.humidity
-            )
-            Text(
-                text = "Wind: " + state.weather?.forecasts?.first()?.windSpeed
-            )
         }
     }
 }

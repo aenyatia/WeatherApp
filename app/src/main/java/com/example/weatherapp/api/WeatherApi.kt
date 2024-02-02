@@ -1,5 +1,6 @@
 package com.example.weatherapp.api
 
+import com.example.weatherapp.R
 import com.example.weatherapp.models.Forecast
 import com.example.weatherapp.models.Weather
 import com.squareup.moshi.Json
@@ -23,6 +24,9 @@ data class WeatherApiResponse(
 ) {
     data class CityResponse(
         @field:Json(name = "name") val name: String,
+        @field:Json(name = "sunrise") val sunrise: Int,
+        @field:Json(name = "sunset") val sunset: Int,
+        @field:Json(name = "population") val population: Int,
     )
 
     data class ListResponse(
@@ -57,7 +61,10 @@ fun WeatherApiResponse.toWeather(): Weather = Weather(
     cityName = city.name,
     forecasts = list.map {
         it.toForecast()
-    }
+    },
+    population = city.population,
+    sunrise = city.sunrise,
+    sunset = city.sunset
 )
 
 fun WeatherApiResponse.ListResponse.toForecast(): Forecast = Forecast(
@@ -71,5 +78,30 @@ fun WeatherApiResponse.ListResponse.toForecast(): Forecast = Forecast(
     pressure = main.pressure,
     windSpeed = wind.speed,
     humidity = main.humidity,
-    time = dtTxt
+    time = dtTxt,
+    date = dt
 )
+
+fun getIconId(icon: String?): Int {
+    return when (icon) {
+        "01d" -> R.drawable._01d2x
+        "02d" -> R.drawable._02d2x
+        "03d" -> R.drawable._03d2x
+        "04d" -> R.drawable._04d2x
+        "09d" -> R.drawable._09d2x
+        "10d" -> R.drawable._10d2x
+        "11d" -> R.drawable._11d2x
+        "13d" -> R.drawable._13d2x
+        "50d" -> R.drawable._50d2x
+        "01n" -> R.drawable._01n2x
+        "02n" -> R.drawable._02n2x
+        "03n" -> R.drawable._03n2x
+        "04n" -> R.drawable._04n2x
+        "09n" -> R.drawable._09n2x
+        "10n" -> R.drawable._10n2x
+        "11n" -> R.drawable._11n2x
+        "13n" -> R.drawable._13n2x
+        "50n" -> R.drawable._50n2x
+        else -> R.drawable._01d2x
+    }
+}

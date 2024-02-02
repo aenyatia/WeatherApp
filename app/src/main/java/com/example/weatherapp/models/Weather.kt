@@ -1,10 +1,17 @@
 package com.example.weatherapp.models
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Weather(
     val cityName: String,
-    val forecasts: List<Forecast>? = null
+    val forecasts: List<Forecast>? = null,
+    val sunrise: Int,
+    val sunset: Int,
+    val population: Int
 )
 
+@Serializable
 data class Forecast(
     val weather: String,
     val weatherDescription: String,
@@ -16,5 +23,6 @@ data class Forecast(
     val windSpeed: Double,
     val pressure: Int,
     val humidity: Int,
-    val time: String
+    val time: String,
+    val date: Int
 )
